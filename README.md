@@ -1,5 +1,5 @@
 # JAGWAS
-Joint Analysis of multiple phenotype GWAS
+Joint Analysis of multi-phenotype GWAS
 
 <br />
 Current version: 1.0.1
@@ -40,7 +40,7 @@ Armadillo Library
 ### Running JAGWAS
 
 1. [Command Line Options](#command-line-options)  
-1. [Input Files](#input-files)
+1. [Input File Format](#input-file-format)
 1. [Output File Format](#output-file-format)
 1. [Examples](#examples)
 
@@ -163,4 +163,7 @@ CHR	SNP	POS	A1	A2	N	AF1	P
 [Version 1.0.0] - April 14, 2024:
 * The original version of JAGWAS
 
-
+## References
+<p>If you use JAGWAS, please cite
+<li>Guo, B. et al. Efficient multi-phenotype genome-wide analysis identifies genetic associations for unsupervised deep-learning-derived high-dimensional brain imaging phenotypes. <em>medRxiv</em> 2024.12.06.24318618 
+[<b>Preprint</b>]. Dec 8, 2024. DOI: <a href="https://www.medrxiv.org/content/10.1101/2024.12.06.24318618v1">10.1101/2024.12.06.24318618</a>.</li></p>
