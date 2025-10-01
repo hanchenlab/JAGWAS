@@ -9,7 +9,7 @@ Current version: 1.0.1
 Option 1: Use the binary executable file for Linux
 * Download the binary executable JAGWAS from the main directory or run the following line of code:
 ```
-git clone https://github.com/baihongguo/JAGWAS
+git clone https://github.com/hanchenlab/JAGWAS
 cd JAGWAS
 ```
 Then change the permission:
