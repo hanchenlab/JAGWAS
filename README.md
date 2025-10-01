@@ -116,7 +116,7 @@ CHR	SNP	POS	A1	A2	N	AF1	BETA	SE	Zscore
 1	rs4	715367	A	G	2288	0.964621	0.873248	1.86112	3.6	
 ```
 
-Only AF, BETA/SE, and SCORE/VAR or Zscore are a must-have. If any of the other columns are missing from your summary statistics files, simply fill them out using NA. 
+Only AF, BETA/SE, and SCORE/VAR or Zscore are a must-have (No missing values allowed in these columns). If any of the other columns are missing from your summary statistics files, simply fill them out using NA. 
 Note that all the input summary statistics files must include the same sets of variants and also in the same order. 
 
 <br /> 
