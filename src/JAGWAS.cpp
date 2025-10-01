@@ -113,7 +113,9 @@ while (std::getline(file_handles[0], line)) {
 
         AF1 = std::stod(data[4]);
         if (AF1 != AF) {
-        std::cerr << "Warning: inconsistent variants AF!" << std::endl;
+        std::cerr << "Error: Inconsistent variants detected in file '" 
+                      << fileNames[f] << "'. Halting execution." << std::endl;
+        exit(EXIT_FAILURE);
         }
        double score = std::stod(data[5]);
         double var = std::stod(data[6]);
@@ -184,6 +186,13 @@ else {
         std::istringstream iss(Line);
         std::vector<std::string> data;
         while (std::getline(iss, Value, delim)) data.push_back(Value);
+        
+        AF1 = std::stod(data[6]);
+        if (AF1 != AF) {
+        std::cerr << "Error: Inconsistent variants detected in file '" 
+                      << fileNames[f] << "'. Halting execution." << std::endl;
+        exit(EXIT_FAILURE);
+        }
         zscores[f] = std::stod(data[7]); 
     }
   
@@ -249,7 +258,9 @@ if (Beta_se == true) {
 
         AF1 = std::stod(data[6]);
         if (AF1 != AF) {
-        std::cerr << "Warning: inconsistent variants AF!" << std::endl;
+        std::cerr << "Error: Inconsistent variants detected in file '" 
+                      << fileNames[f] << "'. Halting execution." << std::endl;
+        exit(EXIT_FAILURE);
         }
         double beta = std::stod(data[7]);
         double se = std::stod(data[8]);
