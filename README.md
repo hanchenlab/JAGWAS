@@ -157,8 +157,8 @@ CHR	SNP	POS	A1	A2	N	AF1	P
 
 ## Recent Updates 
 [Version 1.0.2] - Oct 1, 2025:
-* Revise the sanity check for detecting the existance of inconsistent variants across the summary statistics files. Now the program will stop when such case exists:
-* Error: Inconsistent variants detected in file 'The file containing the inconsistent variants'. Halting execution.
+* Revise the sanity check for detecting the existance of inconsistent variants across the summary statistics files. Now the program will skip the non-overlapping variants and throw a warning message:
+* Warning: Skipping inconsistent variant at line .... Mismatch in file: /....
 
 [Version 1.0.1] - May 26, 2024:
 * Change the output variable log10(P) to log10_P to fix the issue that results$log10(P) not working in R since log10() is a built-in function.
