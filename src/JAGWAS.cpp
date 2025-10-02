@@ -11,20 +11,19 @@
 #include <map>
 
 // Dependencies for the log10P option
-#include <pgamma.c>
-#include <lgamma.c>
-#include <fmax2.c>
-#include <mlutils.c>
+#include </HGCNT95FS/ADDLIE/work/Test/JAGWAS_C++/pgamma.c>
+#include </HGCNT95FS/ADDLIE/work/Test/JAGWAS_C++/lgamma.c>
+#include </HGCNT95FS/ADDLIE/work/Test/JAGWAS_C++/fmax2.c>
+#include </HGCNT95FS/ADDLIE/work/Test/JAGWAS_C++/mlutils.c>
 //#include </HGCNT95FS/ADDLIE/work/Test/JAGWAS_C++/dpois.c>
-#include <dnorm.c>
-#include <pnorm.c>
-#include <ftrunc.c>
-#include <gamma.c>
-#include <lgammacor.c>
-#include <stirlerr.c>
-#include <bd0.c>
-#include <chebyshev.c>
-
+#include </HGCNT95FS/ADDLIE/work/Test/JAGWAS_C++/dnorm.c>
+#include </HGCNT95FS/ADDLIE/work/Test/JAGWAS_C++/pnorm.c>
+#include </HGCNT95FS/ADDLIE/work/Test/JAGWAS_C++/ftrunc.c>
+#include </HGCNT95FS/ADDLIE/work/Test/JAGWAS_C++/gamma.c>
+#include </HGCNT95FS/ADDLIE/work/Test/JAGWAS_C++/lgammacor.c>
+#include </HGCNT95FS/ADDLIE/work/Test/JAGWAS_C++/stirlerr.c>
+#include </HGCNT95FS/ADDLIE/work/Test/JAGWAS_C++/bd0.c>
+#include </HGCNT95FS/ADDLIE/work/Test/JAGWAS_C++/chebyshev.c>
 
 void processFiles(const std::string& outputPath, const std::string& Cor_M, int nrow , double MAF, bool score_test, bool Beta_se , bool logP, std::string delimiter, const std::vector<std::string>& fileNames) {
  
@@ -101,8 +100,6 @@ while (std::getline(file_handles[0], line)) {
         double score = std::stod(data[5]);
         double var = std::stod(data[6]);
         zscores[0] = (score/var)/sqrt(1/var);
-        
-        bool skip_this_variant = false; // Flag to control skipping
 // chunk into different fields, when reading, save fields to string,  
 
        for (size_t f = 1; f < fileNames.size(); f++) {
@@ -115,28 +112,15 @@ while (std::getline(file_handles[0], line)) {
 
         AF1 = std::stod(data[4]);
         if (AF1 != AF) {
-                    std::cerr << "Warning: Skipping inconsistent variant at line " << p + 1
-                              << ". Mismatch in file: " << fileNames[f] << std::endl;
-                    skip_this_variant = true;
-
-                    // IMPORTANT: Consume lines from remaining files to keep them in sync
-                    for (size_t f_skip = f + 1; f_skip < fileNames.size(); ++f_skip) {
-                        std::string dummyLine;
-                        std::getline(file_handles[f_skip], dummyLine);
-                    }
-                    break; // Exit the inner for-loop
-                }
-        double score = std::stod(data[5]);
+            std::cerr << "Error: Inconsistent Allele Frequency (AF) detected in file '" 
+                      << fileNames[f] << "'. Halting execution." << std::endl;
+            // The line below will immediately stop the program
+            exit(EXIT_FAILURE);
+        }
+       double score = std::stod(data[5]);
         double var = std::stod(data[6]);
         zscores[f] = (score/var)/sqrt(1/var);
     } 
-
-
-    if (skip_this_variant) {
-                p++;
-                continue; // Skips to the next iteration of the main `while` loop
-            }
-    // --- This code only runs if the variant was fully consistent ---   
    arma::vec Zscores = zscores;
    arma::mat z = arma::reshape(Zscores, 1, Zscores.size());
    //arma::mat zt = arma::reshape(Zscores, Zscores.size(), 1);
@@ -194,9 +178,7 @@ else {
         std::vector<double> zscores(dim);
         zscores[0] = std::stod(data[7]);
         oss << data[0] << "\t" << data[1] << "\t" << data[2] << "\t" << data[3] << "\t" << data[4] << "\t" << data[5] << "\t" << data[6] << "\t";
-        
-        bool skip_this_variant = false; // Flag to control skipping
-
+    
 // chunk into different fields, when reading, save fields to string,  
 
        for (size_t f = 1; f < fileNames.size(); f++) {
@@ -204,30 +186,17 @@ else {
         std::istringstream iss(Line);
         std::vector<std::string> data;
         while (std::getline(iss, Value, delim)) data.push_back(Value);
-        
+
         AF1 = std::stod(data[6]);
         if (AF1 != AF) {
-                    std::cerr << "Warning: Skipping inconsistent variant at line " << p + 1
-                              << ". Mismatch in file: " << fileNames[f] << std::endl;
-                    skip_this_variant = true;
-
-                    // IMPORTANT: Consume lines from remaining files to keep them in sync
-                    for (size_t f_skip = f + 1; f_skip < fileNames.size(); ++f_skip) {
-                        std::string dummyLine;
-                        std::getline(file_handles[f_skip], dummyLine);
-                    }
-                    break; // Exit the inner for-loop
-                }
+            std::cerr << "Error: Inconsistent Allele Frequency (AF) detected in file '" 
+                      << fileNames[f] << "'. Halting execution." << std::endl;
+            // The line below will immediately stop the program
+            exit(EXIT_FAILURE);
+        }
         zscores[f] = std::stod(data[7]); 
     }
   
-
-
-    if (skip_this_variant) {
-                p++;
-                continue; // Skips to the next iteration of the main `while` loop
-            }
-    // --- This code only runs if the variant was fully consistent ---       
     // do the matrix production, get the chi-sq test statistics and output the results  
    arma::vec Zscores = zscores;
    arma::mat z = arma::reshape(Zscores, 1, Zscores.size());
@@ -278,9 +247,6 @@ if (Beta_se == true) {
         double beta = std::stod(data[7]);
         double se = std::stod(data[8]);
         zscores[0] = beta/se;
-
-        bool skip_this_variant = false; // Flag to control skipping
-
 // chunk into different fields, when reading, save fields to string,  
 
        for (size_t f = 1; f < fileNames.size(); f++) {
@@ -293,28 +259,15 @@ if (Beta_se == true) {
 
         AF1 = std::stod(data[6]);
         if (AF1 != AF) {
-                    std::cerr << "Warning: Skipping inconsistent variant at line " << p + 1
-                              << ". Mismatch in file: " << fileNames[f] << std::endl;
-                    skip_this_variant = true;
-
-                    // IMPORTANT: Consume lines from remaining files to keep them in sync
-                    for (size_t f_skip = f + 1; f_skip < fileNames.size(); ++f_skip) {
-                        std::string dummyLine;
-                        std::getline(file_handles[f_skip], dummyLine);
-                    }
-                    break; // Exit the inner for-loop
-                }
+            std::cerr << "Error: Inconsistent Allele Frequency (AF) detected in file '" 
+                      << fileNames[f] << "'. Halting execution." << std::endl;
+            // The line below will immediately stop the program
+            exit(EXIT_FAILURE);
+        }
         double beta = std::stod(data[7]);
         double se = std::stod(data[8]);
         zscores[f] = beta/se; 
     } 
-
-    if (skip_this_variant) {
-                p++;
-                continue; // Skips to the next iteration of the main `while` loop
-            }
-      
-// --- This code only runs if the variant was fully consistent ---
    arma::vec Zscores = zscores;
    arma::mat z = arma::reshape(Zscores, 1, Zscores.size());
    //arma::mat zt = arma::reshape(Zscores, Zscores.size(), 1);
@@ -418,5 +371,4 @@ for (int i = 1; i < argc; ++i) {
     return 0;
 
 }
-
 
