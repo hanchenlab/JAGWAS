@@ -2,7 +2,7 @@
 Joint Analysis of multi-phenotype GWAS
 
 <br />
-Current version: 1.0.1
+Current version: 1.0.2
 
 ## Quick Installation 
 
