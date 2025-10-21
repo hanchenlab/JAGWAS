@@ -15,7 +15,7 @@
 #include <lgamma.c>
 #include <fmax2.c>
 #include <mlutils.c>
-//#include </HGCNT95FS/ADDLIE/work/Test/JAGWAS_C++/dpois.c>
+//#include <dpois.c>
 #include <dnorm.c>
 #include <pnorm.c>
 #include <ftrunc.c>
@@ -418,5 +418,6 @@ for (int i = 1; i < argc; ++i) {
     return 0;
 
 }
+
 
 
