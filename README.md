@@ -157,9 +157,9 @@ CHR	SNP	POS	A1	A2	N	AF1	P
 
 ## Recent Updates 
 [Version 1.0.2] - Oct 1, 2025:
-* Revise the sanity check for detecting the existance of inconsistent variants across the summary statistics files. Now the program will error out when such cases exist:
-* Error: Inconsistent Allele Frequency (AF) detected in file '...'. Halting execution.
-
+* Revise the sanity check for detecting the existance of inconsistent variants across the summary statistics files. Now the program will skip inconsistent variants when such cases exist:
+* Warning: Skipping inconsistent variant at line 8. Mismatch in file: /HGCNT95FS/ADDLIE/work/Test/JAGWAS_C++/discovery_QT12.txt.
+  
 [Version 1.0.1] - May 26, 2024:
 * Change the output variable log10(P) to log10_P to fix the issue that results$log10(P) not working in R since log10() is a built-in function.
 * Add a delim argument to give more flexibility to the format of summary statistics files, user now can choose tab, single-space, or comma as the delimiter.  
