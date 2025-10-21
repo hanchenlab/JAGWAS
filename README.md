@@ -156,7 +156,7 @@ CHR	SNP	POS	A1	A2	N	AF1	P
 <br />
 
 ## Recent Updates 
-[Version 1.0.2] - Oct 1, 2025:
+[Version 1.0.2] - Oct 21, 2025:
 * Revise the sanity check for detecting the existance of inconsistent variants across the summary statistics files. Now the program will skip inconsistent variants when such cases exist:
 * Warning: Skipping inconsistent variant at line ... Mismatch in file: ...
   
