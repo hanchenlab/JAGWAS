@@ -2,14 +2,14 @@
 Joint Analysis of multi-phenotype GWAS
 
 <br />
-Current version: 1.0.1
+Current version: 1.0.2
 
 ## Quick Installation 
 
 Option 1: Use the binary executable file for Linux
 * Download the binary executable JAGWAS from the main directory or run the following line of code:
 ```
-git clone https://github.com/baihongguo/JAGWAS
+git clone https://github.com/hanchenlab/JAGWAS
 cd JAGWAS
 ```
 Then change the permission:
@@ -116,7 +116,7 @@ CHR	SNP	POS	A1	A2	N	AF1	BETA	SE	Zscore
 1	rs4	715367	A	G	2288	0.964621	0.873248	1.86112	3.6	
 ```
 
-Only AF, BETA/SE, and SCORE/VAR or Zscore are a must-have. If any of the other columns are missing from your summary statistics files, simply fill them out using NA. 
+Only AF, BETA/SE, and SCORE/VAR or Zscore are a must-have (No missing values allowed in these columns). If any of the other columns are missing from your summary statistics files, simply fill them out using NA. 
 Note that all the input summary statistics files must include the same sets of variants and also in the same order. 
 
 <br /> 
@@ -156,6 +156,10 @@ CHR	SNP	POS	A1	A2	N	AF1	P
 <br />
 
 ## Recent Updates 
+[Version 1.0.2] - Oct 21, 2025:
+* Revise the sanity check for detecting the existance of inconsistent variants across the summary statistics files. Now the program will skip inconsistent variants when such cases exist:
+* Warning: Skipping inconsistent variant at line ... Mismatch in file: ...
+  
 [Version 1.0.1] - May 26, 2024:
 * Change the output variable log10(P) to log10_P to fix the issue that results$log10(P) not working in R since log10() is a built-in function.
 * Add a delim argument to give more flexibility to the format of summary statistics files, user now can choose tab, single-space, or comma as the delimiter.  
