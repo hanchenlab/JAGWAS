@@ -233,7 +233,7 @@ else {
    arma::mat z = arma::reshape(Zscores, 1, Zscores.size());
    //arma::mat zt = arma::reshape(Zscores, Zscores.size(), 1);
    arma::mat zt = trans(z);
-   arma::mat chisq = z * cor * zt;
+   arma::mat chisq = z * cor_i * zt;
    double chisqs = chisq(0,0);
    double pValue = pgamma(chisqs/4, dim/2, 0.5, 0, logP);
    if (logP == true) {
