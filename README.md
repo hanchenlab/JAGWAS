@@ -165,7 +165,6 @@ CHR	SNP	POS	A1	A2	N	AF1	P
 ## Recent Updates 
 [Version 1.0.3] - Oct 27, 2026:
 * Fix the p-value for an odd number of phenotypes. The gamma shape was computed with integer division (dim/2), so an odd number k of phenotypes was tested against a chi-square distribution with k-1 degrees of freedom, and a single phenotype gave P = 0. Results for an even number of phenotypes are unchanged.
-* Fix the output when an inconsistent variant is skipped: its columns were written without a p-value or line break and joined to the next variant's row.
 * Read the command-line options by name, so they can be given in any order. A missing, unknown or empty option now stops the program with a message.
 * Add thirdparty/R_pgamma/Rconfig.h, so the source compiles without R installed.
 * Fix the makefile in src/: it now finds the bundled pgamma code and links BLAS/LAPACK directly, so the Armadillo runtime library is no longer needed. Paths and libraries can be set on the make command line (see Quick Installation).
