@@ -2,7 +2,7 @@
 Joint Analysis of multi-phenotype GWAS
 
 <br />
-Current version: 1.0.2
+Current version: 1.0.3
 
 ## Quick Installation 
 
@@ -21,6 +21,13 @@ Option 2: Build JAGWAS Library Dependencies
    * C++11 compiler or later 
    * BLAS/LAPACK. For Intel processors, we recommend that JAGWAS be compiled with an optimized math routine library such as the Intel oneAPI Math Kernal Library to replace BLAS/LAPACK for optimal performance.  
    * Armadillo Library. 
+
+Then build JAGWAS with the makefile in src/, which writes the executable src/JAGWAS:
+```
+cd JAGWAS/src
+make
+```
+If the Armadillo headers or the BLAS/LAPACK library are not on the default paths, give their folders, e.g. `make ARMA_INC=/path/to/armadillo/include BLAS_DIR=/path/to/OpenBLAS`. OpenBLAS is used by default; for another BLAS/LAPACK library set LAPACK_LIBS, e.g. `make LAPACK_LIBS="-llapack -lblas"`. `make STATIC=1` builds a static executable like the one in the main directory.
 <br />
 <br />
 
@@ -116,7 +123,7 @@ CHR	SNP	POS	A1	A2	N	AF1	BETA	SE	Zscore
 1	rs4	715367	A	G	2288	0.964621	0.873248	1.86112	3.6	
 ```
 
-Only AF, BETA/SE, and SCORE/VAR or Zscore are a must-have (No missing values allowed in these columns). If any of the other columns are missing from your summary statistics files, simply fill them out using NA. 
+Only AF, BETA/SE, and SCORE/VAR or Zscore are a must-have (No missing values allowed in these columns). If any of the other columns are missing from your summary statistics files, simply fill them out using NA. For z-score input, the z-score must be the 10th column, as shown above; BETA and SE can be NA. 
 Note that all the input summary statistics files must include the same sets of variants and also in the same order. 
 
 <br /> 
@@ -137,7 +144,7 @@ CHR	SNP	POS	A1	A2	N	AF1	P
 
 To run JAGWAS using the example data, execute JAGWAS with the following code.
 ```unix
-./JAGWAS --outputFilePath outputFilePath/example_JAGWAS.txt --cor_matrix pathTo/correlation_matrix.txt --nrow 3 --MAF 0 --score_test 0 --beta_se 1 --logP 0 --delim \t --fileNames pathTo/discovery_QT0.txt pathTo/discovery_QT1.txt
+./JAGWAS --outputFilePath example_JAGWAS.txt --cor_matrix examples/correlation_matrix.txt --nrow 3 --MAF 0 --score_test 0 --beta_se 1 --logP 0 --delim \t --fileNames examples/discovery_QT0.txt examples/discovery_QT1.txt
 
 ```
 The results should look like. 
@@ -156,6 +163,12 @@ CHR	SNP	POS	A1	A2	N	AF1	P
 <br />
 
 ## Recent Updates 
+[Version 1.0.3] - Oct 27, 2026:
+* Fix the p-value for an odd number of phenotypes (thanks to: Dr. Bingshan Li). The gamma shape was computed with integer division (dim/2), so an odd number k of phenotypes was tested against a chi-square distribution with k-1 degrees of freedom, and a single phenotype gave P = 0. Results for an even number of phenotypes are unchanged. 
+* Read the command-line options by name, so they can be given in any order. A missing, unknown or empty option now stops the program with a message.
+* Add thirdparty/R_pgamma/Rconfig.h, so the source compiles without R installed.
+* Fix the makefile in src/: it now finds the bundled pgamma code and links BLAS/LAPACK directly, so the Armadillo runtime library is no longer needed. Paths and libraries can be set on the make command line (see Quick Installation).
+
 [Version 1.0.2] - Oct 21, 2025:
 * Revise the sanity check for detecting the existance of inconsistent variants across the summary statistics files. Now the program will skip inconsistent variants when such cases exist:
 * Warning: Skipping inconsistent variant at line ... Mismatch in file: ...

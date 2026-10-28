@@ -26,6 +26,16 @@
 #include <chebyshev.c>
 
 
+// z-score input has the columns CHR SNP POS A1 A2 N AF1 BETA SE Zscore, so the z-score is the 10th column
+void checkZscoreColumns(const std::vector<std::string>& data, const std::string& fileName) {
+    if (data.size() < 10) {
+        std::cerr << "Error: a row of " << fileName << " has " << data.size() << " columns. "
+                  << "z-score input needs 10 columns (CHR SNP POS A1 A2 N AF1 BETA SE Zscore), with the z-score in column 10." << std::endl;
+        std::exit(1);
+    }
+}
+
+
 void processFiles(const std::string& outputPath, const std::string& Cor_M, int nrow , double MAF, bool score_test, bool Beta_se , bool logP, std::string delimiter, const std::vector<std::string>& fileNames) {
  
     int nline = nrow;
@@ -97,7 +107,6 @@ while (std::getline(file_handles[0], line)) {
     if (AF>MAF && AF<(1-MAF))
     {
         std::vector<double> zscores(dim);
-        oss << "NA" << "\t" << data[0] << "\t" << "NA" << "\t" << data[1] << "\t" << data[2] << "\t" << data[3] << "\t" << data[4] << "\t";
         double score = std::stod(data[5]);
         double var = std::stod(data[6]);
         zscores[0] = (score/var)/sqrt(1/var);
@@ -136,14 +145,16 @@ while (std::getline(file_handles[0], line)) {
                 p++;
                 continue; // Skips to the next iteration of the main `while` loop
             }
-    // --- This code only runs if the variant was fully consistent ---   
+    // --- This code only runs if the variant was fully consistent ---
+    // write the variant columns only now, so a skipped variant leaves no partial line in the output
+    oss << "NA" << "\t" << data[0] << "\t" << "NA" << "\t" << data[1] << "\t" << data[2] << "\t" << data[3] << "\t" << data[4] << "\t";
    arma::vec Zscores = zscores;
    arma::mat z = arma::reshape(Zscores, 1, Zscores.size());
    //arma::mat zt = arma::reshape(Zscores, Zscores.size(), 1);
    arma::mat zt = trans(z);
    arma::mat chisq = z * cor_i * zt;
    double chisqs = chisq(0,0);
-   double pValue = pgamma(chisqs/4, dim/2, 0.5, 0, logP);
+   double pValue = pgamma(chisqs/4, dim/2.0, 0.5, 0, logP);
    if (logP == true) {
    pValue = pValue*(1/log(10));      
    }
@@ -188,12 +199,12 @@ else {
         std::istringstream iss(line);
         std::vector<std::string> data;
         while (std::getline(iss, value, delim)) data.push_back(value);
+        checkZscoreColumns(data, fileNames[0]);
         AF = std::stod(data[6]);
     if (AF>MAF && AF<(1-MAF))
     {
         std::vector<double> zscores(dim);
-        zscores[0] = std::stod(data[7]);
-        oss << data[0] << "\t" << data[1] << "\t" << data[2] << "\t" << data[3] << "\t" << data[4] << "\t" << data[5] << "\t" << data[6] << "\t";
+        zscores[0] = std::stod(data[9]);
         
         bool skip_this_variant = false; // Flag to control skipping
 
@@ -204,7 +215,7 @@ else {
         std::istringstream iss(Line);
         std::vector<std::string> data;
         while (std::getline(iss, Value, delim)) data.push_back(Value);
-        
+        checkZscoreColumns(data, fileNames[f]);
         AF1 = std::stod(data[6]);
         if (AF1 != AF) {
                     std::cerr << "Warning: Skipping inconsistent variant at line " << p + 1
@@ -218,7 +229,7 @@ else {
                     }
                     break; // Exit the inner for-loop
                 }
-        zscores[f] = std::stod(data[7]); 
+        zscores[f] = std::stod(data[9]);
     }
   
 
@@ -227,15 +238,17 @@ else {
                 p++;
                 continue; // Skips to the next iteration of the main `while` loop
             }
-    // --- This code only runs if the variant was fully consistent ---       
-    // do the matrix production, get the chi-sq test statistics and output the results  
+    // --- This code only runs if the variant was fully consistent ---
+    // write the variant columns only now, so a skipped variant leaves no partial line in the output
+    oss << data[0] << "\t" << data[1] << "\t" << data[2] << "\t" << data[3] << "\t" << data[4] << "\t" << data[5] << "\t" << data[6] << "\t";
+    // do the matrix production, get the chi-sq test statistics and output the results
    arma::vec Zscores = zscores;
    arma::mat z = arma::reshape(Zscores, 1, Zscores.size());
    //arma::mat zt = arma::reshape(Zscores, Zscores.size(), 1);
    arma::mat zt = trans(z);
    arma::mat chisq = z * cor_i * zt;
    double chisqs = chisq(0,0);
-   double pValue = pgamma(chisqs/4, dim/2, 0.5, 0, logP);
+   double pValue = pgamma(chisqs/4, dim/2.0, 0.5, 0, logP);
    if (logP == true) {
    pValue = pValue*(1/log(10));      
    }
@@ -274,7 +287,6 @@ if (Beta_se == true) {
     if (AF>MAF && AF<(1-MAF))
     {
         std::vector<double> zscores(dim);
-        oss << data[0] << "\t" << data[1] << "\t" << data[2] << "\t" << data[3] << "\t" << data[4] << "\t" << data[5] << "\t" << data[6] << "\t";
         double beta = std::stod(data[7]);
         double se = std::stod(data[8]);
         zscores[0] = beta/se;
@@ -315,13 +327,15 @@ if (Beta_se == true) {
             }
       
 // --- This code only runs if the variant was fully consistent ---
+    // write the variant columns only now, so a skipped variant leaves no partial line in the output
+    oss << data[0] << "\t" << data[1] << "\t" << data[2] << "\t" << data[3] << "\t" << data[4] << "\t" << data[5] << "\t" << data[6] << "\t";
    arma::vec Zscores = zscores;
    arma::mat z = arma::reshape(Zscores, 1, Zscores.size());
    //arma::mat zt = arma::reshape(Zscores, Zscores.size(), 1);
    arma::mat zt = trans(z);
    arma::mat chisq = z * cor_i * zt;
    double chisqs = chisq(0,0);
-   double pValue = pgamma(chisqs/4, dim/2, 0.5, 0, logP);
+   double pValue = pgamma(chisqs/4, dim/2.0, 0.5, 0, logP);
    if (logP == true) {
    pValue = pValue*(1/log(10));      
    }
@@ -372,6 +386,7 @@ int main(int argc, char* argv[]) {
         {"--delim", false},
         {"--fileNames", false}
     };
+    std::vector<std::string> fileNames;
     
 
 
@@ -382,7 +397,17 @@ for (int i = 1; i < argc; ++i) {
         if (arg.substr(0, 2) == "--") {
             // Check if the argument is known
             if (knownArgs.find(arg) != knownArgs.end()) {
-                if (i + 1 < argc) { // Make sure we are not at the end of argv!
+                if (arg == "--fileNames") {
+                    // every value up to the next option is a file name
+                    while (i + 1 < argc && std::string(argv[i + 1]).substr(0, 2) != "--") {
+                        fileNames.push_back(argv[++i]);
+                    }
+                    if (fileNames.empty()) {
+                        std::cerr << "Value for " << arg << " not specified." << std::endl;
+                        return 1;
+                    }
+                    knownArgs[arg] = true;
+                } else if (i + 1 < argc && std::string(argv[i + 1]).substr(0, 2) != "--") { // Make sure we are not at the end of argv!
                     cmdArgs[arg] = argv[i + 1];  // Add the argument to our map
                     knownArgs[arg] = true;  // Mark this argument as found
                     i++;  // Increment 'i' so we don't try to process the value as a key
@@ -394,25 +419,36 @@ for (int i = 1; i < argc; ++i) {
                 std::cerr << "Unknown argument: " << arg << std::endl;
                 return 1;
             }
+        } else {
+            std::cerr << "Unexpected value: " << arg << std::endl;
+            return 1;
         }
     }
 
-
-
-
-    std::string outputFilePath(argv[2]);
-    std::string cor_m(argv[4]);
-    int nrow = std::atoi(argv[6]);
-    double MAF = std::stod(argv[8]);
-    bool score_test = std::stoi(argv[10]) != 0;
-    bool beta_se = std::stoi(argv[12]) != 0;
-    bool logP = std::stoi(argv[14]) != 0;
-    std::string delimiter(argv[16]);
-    
-    std::vector<std::string> fileNames;
-    for (int i = 18; i < argc; ++i) {
-        fileNames.push_back(argv[i]);
+    bool missing = false;
+    for (const auto& a : knownArgs) {
+        if (!a.second) {
+            std::cerr << "Missing argument: " << a.first << std::endl;
+            missing = true;
+        }
     }
+    if (missing) {
+        return 1;
+    }
+
+
+
+
+    // read the options by name, so they can be given in any order
+    std::string outputFilePath(cmdArgs["--outputFilePath"]);
+    std::string cor_m(cmdArgs["--cor_matrix"]);
+    int nrow = std::atoi(cmdArgs["--nrow"].c_str());
+    double MAF = std::stod(cmdArgs["--MAF"]);
+    bool score_test = std::stoi(cmdArgs["--score_test"]) != 0;
+    bool beta_se = std::stoi(cmdArgs["--beta_se"]) != 0;
+    bool logP = std::stoi(cmdArgs["--logP"]) != 0;
+    std::string delimiter(cmdArgs["--delim"]);
+    
 
     processFiles(outputFilePath, cor_m, nrow,  MAF, score_test, beta_se, logP, delimiter, fileNames);
     return 0;
