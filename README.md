@@ -144,7 +144,7 @@ CHR	SNP	POS	A1	A2	N	AF1	P
 
 To run JAGWAS using the example data, execute JAGWAS with the following code.
 ```unix
-./JAGWAS --outputFilePath outputFilePath/example_JAGWAS.txt --cor_matrix pathTo/correlation_matrix.txt --nrow 3 --MAF 0 --score_test 0 --beta_se 1 --logP 0 --delim \t --fileNames pathTo/discovery_QT0.txt pathTo/discovery_QT1.txt
+./JAGWAS --outputFilePath example_JAGWAS.txt --cor_matrix examples/correlation_matrix.txt --nrow 3 --MAF 0 --score_test 0 --beta_se 1 --logP 0 --delim \t --fileNames examples/discovery_QT0.txt examples/discovery_QT1.txt
 
 ```
 The results should look like. 
